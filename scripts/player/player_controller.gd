@@ -31,6 +31,7 @@ var _is_sprinting: bool = false
 
 # Touch camera state
 var _touch_look_index: int = -1   # Finger index controlling camera
+var _mouse_captured: bool = false  # Cached mouse capture state
 
 # Reference to virtual joystick (set by game_level.gd after instantiation)
 var _joystick = null
@@ -48,6 +49,7 @@ func _ready() -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	_mouse_captured = Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
 
 # -------------------------------------------------
 ## Called by game_level.gd to wire up the joystick node.
@@ -57,7 +59,7 @@ func set_joystick(joystick_node) -> void:
 # -------------------------------------------------
 func _unhandled_input(event: InputEvent) -> void:
 	# ---- Desktop mouse-look ----
-	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+	if event is InputEventMouseMotion and _mouse_captured:
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		_head.rotate_x(-event.relative.y * mouse_sensitivity)
 		_head.rotation.x = clamp(
@@ -68,17 +70,20 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	# Release / recapture mouse on desktop with Escape
 	if event.is_action_pressed("ui_cancel") and not OS.has_feature("mobile"):
-		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		if _mouse_captured:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		_mouse_captured = Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
 
-	# ---- Touch camera (right half of screen) ----
+	# ---- Touch camera ----
+	# On desktop (mouse captured): accept any touch/drag for camera look.
+	# On mobile: only the right half of the screen controls the camera.
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
 		var half_w := get_viewport().get_visible_rect().size.x * 0.5
 		if touch.pressed:
-			if _touch_look_index == -1 and touch.position.x >= half_w:
+			if _touch_look_index == -1 and (_mouse_captured or touch.position.x >= half_w):
 				_touch_look_index = touch.index
 		else:
 			if touch.index == _touch_look_index:
@@ -86,7 +91,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event is InputEventScreenDrag:
 		var drag := event as InputEventScreenDrag
-		if drag.index == _touch_look_index:
+		if _mouse_captured or drag.index == _touch_look_index:
 			rotate_y(-drag.relative.x * touch_sensitivity)
 			_head.rotate_x(-drag.relative.y * touch_sensitivity)
 			_head.rotation.x = clamp(
