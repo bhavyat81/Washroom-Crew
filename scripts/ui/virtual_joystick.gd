@@ -35,6 +35,9 @@ func get_direction() -> Vector2:
 
 # -------------------------------------------------
 func _input(event: InputEvent) -> void:
+	# Only handle touch input on mobile — on desktop the mouse drives the camera
+	if not OS.has_feature("mobile"):
+		return
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
 		if touch.pressed:
