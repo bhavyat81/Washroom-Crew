@@ -8,7 +8,7 @@ extends CSGBox3D
 
 # -------------------------------------------------
 # Signals
-signal stain_cleaned(stain: Stain)
+signal stain_cleaned(stain)
 
 # -------------------------------------------------
 ## Total spray power required to remove this stain

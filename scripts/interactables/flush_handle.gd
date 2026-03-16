@@ -8,7 +8,7 @@ extends CSGBox3D
 
 # -------------------------------------------------
 # Signals
-signal flushed(handle: FlushHandle)
+signal flushed(handle)
 
 # -------------------------------------------------
 var _has_flushed: bool = false

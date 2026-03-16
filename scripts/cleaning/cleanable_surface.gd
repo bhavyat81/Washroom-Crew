@@ -14,8 +14,8 @@ extends Node
 
 # -------------------------------------------------
 # Signals
-signal surface_clean(surface: CleanableSurface)
-signal dirt_changed(new_value: float)
+signal surface_clean(surface)
+signal dirt_changed(new_value)
 
 # -------------------------------------------------
 # Exported settings

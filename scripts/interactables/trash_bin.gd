@@ -6,7 +6,7 @@ class_name TrashBin
 extends "res://scripts/interactables/interactable_base.gd"
 
 # -------------------------------------------------
-signal task_completed(bin: TrashBin)
+signal task_completed(bin)
 
 # -------------------------------------------------
 @export var bag_changed: bool = false

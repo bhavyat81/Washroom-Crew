@@ -16,9 +16,9 @@ extends Node
 
 # -------------------------------------------------
 # Signals
-signal level_complete(score_data: Dictionary)
-signal stall_activated(stall_index: int)
-signal timer_updated(seconds_remaining: float)
+signal level_complete(score_data)
+signal stall_activated(stall_index)
+signal timer_updated(seconds_remaining)
 
 # -------------------------------------------------
 @export var total_time: float = 180.0          # Seconds before rush arrives

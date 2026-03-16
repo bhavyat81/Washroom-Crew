@@ -8,7 +8,7 @@ extends RigidBody3D
 
 # -------------------------------------------------
 # Signals
-signal blob_drained(blob: DirtBlob)
+signal blob_drained(blob)
 
 # -------------------------------------------------
 ## How hard the spray pushes this blob (multiplied by spray power * delta)

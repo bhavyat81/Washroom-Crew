@@ -16,7 +16,7 @@ extends Node3D
 
 # -------------------------------------------------
 # Signals
-signal interacted(interactable: InteractableBase)
+signal interacted(interactable)
 
 # -------------------------------------------------
 @export var prompt_text: String = "Press E to interact"

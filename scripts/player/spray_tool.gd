@@ -25,7 +25,7 @@ extends Node3D
 @export var spray_particles: GPUParticles3D
 
 # Emitted every frame so the HUD can display the ammo bar
-signal ammo_changed(current: float, maximum: float)
+signal ammo_changed(current, maximum)
 
 # -------------------------------------------------
 # Internal
@@ -141,7 +141,7 @@ func _process(delta: float) -> void:
 # -------------------------------------------------
 func _do_spray(delta: float) -> void:
 	_spray_ray.force_raycast_update()
-	var hit := _spray_ray.get_collider()
+	var hit = _spray_ray.get_collider()
 	if hit == null:
 		return
 
@@ -171,7 +171,7 @@ func _do_spray(delta: float) -> void:
 # -------------------------------------------------
 func _do_foam(delta: float) -> void:
 	_spray_ray.force_raycast_update()
-	var hit := _spray_ray.get_collider()
+	var hit = _spray_ray.get_collider()
 	if hit == null:
 		return
 
@@ -182,7 +182,7 @@ func _do_foam(delta: float) -> void:
 # -------------------------------------------------
 ## Searches the hit node and its ancestors for a CleanableSurface component.
 func _find_cleanable(node: Node) -> Node:
-	var check := node
+	var check = node
 	while check != null:
 		if check.has_method("get_cleanliness_percent"):
 			return check
@@ -196,7 +196,7 @@ func _find_cleanable(node: Node) -> Node:
 # -------------------------------------------------
 ## Searches the hit node and its ancestors for a Stain node.
 func _find_stain(node: Node) -> Node:
-	var check := node
+	var check = node
 	while check != null:
 		if check.has_signal("stain_cleaned"):
 			return check
@@ -206,7 +206,7 @@ func _find_stain(node: Node) -> Node:
 # -------------------------------------------------
 ## Searches the hit node and its ancestors for a DirtBlob.
 func _find_dirt_blob(node: Node) -> Node:
-	var check := node
+	var check = node
 	while check != null:
 		if check.has_method("drain") and check.has_signal("blob_drained"):
 			return check

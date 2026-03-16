@@ -12,8 +12,8 @@ extends Node
 
 # -------------------------------------------------
 # Signals
-signal stall_complete(stall_index: int)
-signal task_updated(task_id: String, completed: bool)
+signal stall_complete(stall_index)
+signal task_updated(task_id, completed)
 
 # -------------------------------------------------
 # Stall index (set by LevelManager / scene)

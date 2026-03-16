@@ -7,7 +7,7 @@ class_name TissueHolder
 extends "res://scripts/interactables/interactable_base.gd"
 
 # -------------------------------------------------
-signal task_completed(holder: TissueHolder)
+signal task_completed(holder)
 
 # -------------------------------------------------
 @export var replaced: bool = false
