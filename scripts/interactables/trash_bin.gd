@@ -3,7 +3,7 @@
 ## Player presses E to change the bag.  Emits "task_completed" when done.
 
 class_name TrashBin
-extends InteractableBase
+extends "res://scripts/interactables/interactable_base.gd"
 
 # -------------------------------------------------
 signal task_completed(bin: TrashBin)

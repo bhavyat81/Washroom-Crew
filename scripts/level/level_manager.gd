@@ -35,7 +35,7 @@ signal timer_updated(seconds_remaining: float)
 # State
 var current_stall_index: int = 0
 var time_remaining: float = 0.0
-var _task_managers: Array[TaskManager] = []
+var _task_managers: Array = []
 var _level_started: bool = false
 var _level_finished: bool = false
 var _stalls_complete: int = 0
@@ -54,7 +54,7 @@ func _ready() -> void:
 		if stall == null:
 			push_warning("LevelManager: stall node not found at path %s" % path)
 			continue
-		var tm := stall.find_child("TaskManager", true, false) as TaskManager
+		var tm = stall.find_child("TaskManager", true, false)
 		if tm == null:
 			push_warning("LevelManager: no TaskManager found under stall %s" % path)
 			continue

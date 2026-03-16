@@ -24,7 +24,7 @@ signal dirt_changed(new_value: float)
 @export var mesh_node: MeshInstance3D          # The mesh whose material we drive
 
 # Optional foam system attached to this surface
-@export var foam_system: FoamSystem
+@export var foam_system: Node
 
 # -------------------------------------------------
 # State

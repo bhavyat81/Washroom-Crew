@@ -146,19 +146,19 @@ func _do_spray(delta: float) -> void:
 		return
 
 	# Check for CleanableSurface component first
-	var surface: CleanableSurface = _find_cleanable(hit)
+	var surface = _find_cleanable(hit)
 	if surface:
 		surface.apply_spray(spray_power * delta)
 		return
 
 	# Also check for Stain nodes (floor/wall stains)
-	var stain: Stain = _find_stain(hit)
+	var stain = _find_stain(hit)
 	if stain:
 		stain.apply_spray(spray_power * delta)
 		return
 
 	# Check for DirtBlob — push it horizontally toward the drain
-	var blob: DirtBlob = _find_dirt_blob(hit)
+	var blob = _find_dirt_blob(hit)
 	if blob:
 		# Project camera forward onto XZ plane for horizontal-only push
 		var spray_dir := Vector3.ZERO
@@ -175,41 +175,41 @@ func _do_foam(delta: float) -> void:
 	if hit == null:
 		return
 
-	var surface: CleanableSurface = _find_cleanable(hit)
+	var surface = _find_cleanable(hit)
 	if surface and surface.foam_system:
 		surface.foam_system.apply_foam(delta)
 
 # -------------------------------------------------
 ## Searches the hit node and its ancestors for a CleanableSurface component.
-func _find_cleanable(node: Node) -> CleanableSurface:
+func _find_cleanable(node: Node) -> Node:
 	var check := node
 	while check != null:
-		if check is CleanableSurface:
-			return check as CleanableSurface
+		if check.has_method("get_cleanliness_percent"):
+			return check
 		# Also support CleanableSurface as a child component
 		for child in check.get_children():
-			if child is CleanableSurface:
-				return child as CleanableSurface
+			if child.has_method("get_cleanliness_percent"):
+				return child
 		check = check.get_parent()
 	return null
 
 # -------------------------------------------------
 ## Searches the hit node and its ancestors for a Stain node.
-func _find_stain(node: Node) -> Stain:
+func _find_stain(node: Node) -> Node:
 	var check := node
 	while check != null:
-		if check is Stain:
-			return check as Stain
+		if check.has_signal("stain_cleaned"):
+			return check
 		check = check.get_parent()
 	return null
 
 # -------------------------------------------------
 ## Searches the hit node and its ancestors for a DirtBlob.
-func _find_dirt_blob(node: Node) -> DirtBlob:
+func _find_dirt_blob(node: Node) -> Node:
 	var check := node
 	while check != null:
-		if check is DirtBlob:
-			return check as DirtBlob
+		if check.has_method("drain") and check.has_signal("blob_drained"):
+			return check
 		check = check.get_parent()
 	return null
 

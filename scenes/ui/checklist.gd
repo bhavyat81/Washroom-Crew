@@ -44,7 +44,7 @@ const STALL_TASK_CONFIGS: Array = [
 var _task_rows: Dictionary = {}
 
 # Reference to the currently active TaskManager
-var _task_manager: TaskManager = null
+var _task_manager = null
 var _active_stall_index: int = 0
 
 # -------------------------------------------------
@@ -60,7 +60,7 @@ func set_active_stall(stall_index: int) -> void:
 
 # -------------------------------------------------
 ## Called by GameLevel to wire the active stall's TaskManager.
-func connect_task_manager(tm: TaskManager) -> void:
+func connect_task_manager(tm) -> void:
 	# Disconnect previous manager
 	if _task_manager and _task_manager.task_updated.is_connected(_on_task_updated):
 		_task_manager.task_updated.disconnect(_on_task_updated)
@@ -100,7 +100,7 @@ func _build_task_rows(stall_index: int) -> void:
 func _refresh_task_display() -> void:
 	if _task_manager == null:
 		return
-	var s := _task_manager.get_task_summary()
+	var s = _task_manager.get_task_summary()
 	var idx := s.get("stall_index", 0) as int
 
 	# Stain / graffiti row
