@@ -76,14 +76,14 @@ func _unhandled_input(event: InputEvent) -> void:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		_mouse_captured = Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
 
-	# ---- Touch camera ----
-	# On desktop (mouse captured): accept any touch/drag for camera look.
-	# On mobile: only the right half of the screen controls the camera.
+	# ---- Touch camera (mobile only) ----
+	# On desktop (mouse captured): InputEventMouseMotion handles the camera.
+	# On mobile: right half of the screen controls the camera via touch.
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
 		var half_w := get_viewport().get_visible_rect().size.x * 0.5
 		if touch.pressed:
-			if _touch_look_index == -1 and (_mouse_captured or touch.position.x >= half_w):
+			if _touch_look_index == -1 and not _mouse_captured and touch.position.x >= half_w:
 				_touch_look_index = touch.index
 		else:
 			if touch.index == _touch_look_index:
@@ -91,7 +91,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event is InputEventScreenDrag:
 		var drag := event as InputEventScreenDrag
-		if _mouse_captured or drag.index == _touch_look_index:
+		if not _mouse_captured and drag.index == _touch_look_index:
 			rotate_y(-drag.relative.x * touch_sensitivity)
 			_head.rotate_x(-drag.relative.y * touch_sensitivity)
 			_head.rotation.x = clamp(
