@@ -1,6 +1,7 @@
 ## game_level.gd
 ## Root script for the main game level scene.
-## Wires together the LevelManager, HUD, Checklist, and SprayTool ammo bar.
+## Wires together the LevelManager, HUD, Checklist, SprayTool ammo bar,
+## and mobile touch controls.
 
 extends Node3D
 
@@ -38,6 +39,12 @@ func _ready() -> void:
 	var spray_tool := get_node_or_null("Player/Head/Camera3D/SprayTool") as SprayTool
 	if spray_tool and hud and hud.has_method("update_ammo"):
 		spray_tool.ammo_changed.connect(hud.update_ammo)
+
+	# Wire virtual joystick to player controller
+	var joystick := get_node_or_null("TouchControls/VirtualJoystick")
+	var player := get_node_or_null("Player")
+	if joystick and player and player.has_method("set_joystick"):
+		player.set_joystick(joystick)
 
 # -------------------------------------------------
 func _on_level_complete(score_data: Dictionary) -> void:

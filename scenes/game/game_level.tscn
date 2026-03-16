@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://wrcgamelevel01"]
+[gd_scene load_steps=29 format=3 uid="uid://wrcgamelevel01"]
 
 [ext_resource type="Script" path="res://scenes/game/game_level.gd" id="1_gamelevel"]
 [ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="2_player"]
@@ -15,6 +15,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="13_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/checklist.tscn" id="14_checklist"]
 [ext_resource type="PackedScene" path="res://scenes/ui/level_complete.tscn" id="15_lvlcomplete"]
+[ext_resource type="PackedScene" path="res://scenes/ui/virtual_joystick.tscn" id="16_joystick"]
+[ext_resource type="PackedScene" path="res://scenes/ui/touch_buttons.tscn" id="17_touchbtns"]
 
 [sub_resource type="CapsuleShape3D" id="capsule1"]
 radius = 0.35
@@ -487,3 +489,9 @@ stall_nodes = [NodePath("../Stall0"), NodePath("../Stall1"), NodePath("../Stall2
 [node name="Checklist" parent="UILayer" instance=ExtResource("14_checklist")]
 
 [node name="LevelComplete" parent="UILayer" instance=ExtResource("15_lvlcomplete")]
+
+[node name="TouchControls" type="CanvasLayer" parent="."]
+
+[node name="VirtualJoystick" parent="TouchControls" instance=ExtResource("16_joystick")]
+
+[node name="TouchButtons" parent="TouchControls" instance=ExtResource("17_touchbtns")]

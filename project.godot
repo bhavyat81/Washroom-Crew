@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+window/handheld/orientation=landscape
 
 [input]
 
@@ -68,6 +69,11 @@ pause={
 [physics]
 
 3d/default_gravity=9.8
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+pointing/emulate_mouse_from_touch=true
 
 [rendering]
 
