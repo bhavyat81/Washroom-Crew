@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CosmeticsData" format=3 uid="uid://wrccos003"]
+
+[ext_resource type="Script" path="res://scripts/progression/cosmetics_data.gd" id="1_cosdata"]
+
+[resource]
+script = ExtResource("1_cosdata")
+cosmetic_type = 3
+cosmetic_name = "Luxury Marble Theme"
+cosmetic_id = "theme_marble"
+description = "Transform any restroom into a 5-star marble palace. Premium theme."
+is_unlocked = false
+unlock_cost = 0
+is_premium = true
+iap_product_id = "com.washroomcrew.theme.marble"
+trial_via_rewarded_ad = false
+rarity = 3

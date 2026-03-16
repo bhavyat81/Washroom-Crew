@@ -1,0 +1,104 @@
+## spray_tool.gd
+## Jet-spray cleaning tool held by the player.
+## On left-click (action "spray"):  fires a spray ray that reduces dirt.
+## On right-click (action "foam"):  applies foam/disinfectant (timed hold).
+## Attach to a Node3D under the camera so it moves with the player's view.
+
+class_name SprayTool
+extends Node3D
+
+# --- Spray settings ---
+@export var spray_distance: float = 3.0
+@export var spray_power: float = 0.4       # Dirt reduced per second while spraying
+@export var spray_collision_mask: int = 0b11111111
+
+# --- Foam settings (handed off to FoamSystem on the surface) ---
+@export var foam_distance: float = 2.5
+
+# --- Visual feedback ---
+## Spray "particles" or mesh — swap with a GPUParticles3D for visual polish
+@export var spray_particles: GPUParticles3D
+
+# Internal reference to camera (set in _ready via parent chain)
+var _camera: Camera3D
+
+# Spray raycast helper
+var _spray_ray: RayCast3D
+
+# -------------------------------------------------
+func _ready() -> void:
+	# Walk up the scene tree to find the Camera3D
+	var node := get_parent()
+	while node != null:
+		if node is Camera3D:
+			_camera = node as Camera3D
+			break
+		# Also accept the PlayerController pattern: Head/Camera3D
+		if node.has_method("get_camera"):
+			_camera = node.get_camera()
+			break
+		node = node.get_parent()
+
+	# Create a RayCast3D child for spray hit detection
+	_spray_ray = RayCast3D.new()
+	_spray_ray.name = "SprayRay"
+	_spray_ray.enabled = true
+	_spray_ray.collision_mask = spray_collision_mask
+	# The ray is a child of this Node3D which follows the camera — just set direction once
+	_spray_ray.target_position = Vector3(0.0, 0.0, -spray_distance)
+	add_child(_spray_ray)
+
+# -------------------------------------------------
+func _process(delta: float) -> void:
+	# --- Spraying ---
+	if Input.is_action_pressed("spray"):
+		_do_spray(delta)
+		_set_particles_active(true)
+	else:
+		_set_particles_active(false)
+
+	# --- Foam (delegated to FoamSystem on the surface) ---
+	if Input.is_action_pressed("foam"):
+		_do_foam(delta)
+
+# -------------------------------------------------
+func _do_spray(delta: float) -> void:
+	_spray_ray.force_raycast_update()
+	var hit := _spray_ray.get_collider()
+	if hit == null:
+		return
+
+	# Look for a CleanableSurface component on the hit object or its parent
+	var surface: CleanableSurface = _find_cleanable(hit)
+	if surface:
+		surface.apply_spray(spray_power * delta)
+
+# -------------------------------------------------
+func _do_foam(delta: float) -> void:
+	_spray_ray.force_raycast_update()
+	var hit := _spray_ray.get_collider()
+	if hit == null:
+		return
+
+	var surface: CleanableSurface = _find_cleanable(hit)
+	if surface and surface.foam_system:
+		surface.foam_system.apply_foam(delta)
+
+# -------------------------------------------------
+## Searches the hit node and its ancestors for a CleanableSurface component.
+func _find_cleanable(node: Node) -> CleanableSurface:
+	var check := node
+	while check != null:
+		if check is CleanableSurface:
+			return check as CleanableSurface
+		# Also support CleanableSurface as a child component
+		for child in check.get_children():
+			if child is CleanableSurface:
+				return child as CleanableSurface
+		check = check.get_parent()
+	return null
+
+# -------------------------------------------------
+func _set_particles_active(active: bool) -> void:
+	if spray_particles:
+		spray_particles.emitting = active

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="VenueData" format=3 uid="uid://wrcvenue003"]
+
+[ext_resource type="Script" path="res://scripts/progression/venue_data.gd" id="1_venuedata"]
+
+[resource]
+script = ExtResource("1_venuedata")
+venue_name = "Mall Maintenance"
+venue_id = "mall"
+description = "The Saturday rush is relentless. Keep the food court restrooms pristine for non-stop shoppers."
+venue_type = 2
+level_count = 10
+is_unlocked = false
+unlock_cost = 0
+is_iap = true
+iap_product_id = "com.washroomcrew.venue.mall"
+rewarded_ad_available = true
+required_stars_to_unlock = 18

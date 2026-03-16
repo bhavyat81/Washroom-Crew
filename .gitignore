@@ -1,0 +1,34 @@
+# Godot 4.x — Washroom Crew
+# .gitignore
+
+# Godot-specific ignores
+.import/
+export.cfg
+export_credentials.cfg
+
+# Godot 4 import cache
+.godot/
+
+# Mono / C# (not used here, but included for safety)
+.mono/
+data_*/
+mono_crash.*.json
+
+# Build output
+builds/
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# Windows thumbnails
+Thumbs.db
+Desktop.ini
+
+# VSCode (optional — keep if you use VSCode Godot extension)
+# .vscode/
+
+# JetBrains Rider
+.idea/
+*.iml
