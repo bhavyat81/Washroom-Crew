@@ -1,6 +1,6 @@
 ## game_level.gd
 ## Root script for the main game level scene.
-## Wires together the LevelManager, HUD, and Checklist UI.
+## Wires together the LevelManager, HUD, Checklist, and SprayTool ammo bar.
 
 extends Node3D
 
@@ -9,6 +9,14 @@ extends Node3D
 @onready var hud: Control                = $UILayer/HUD
 @onready var checklist: Control          = $UILayer/Checklist
 @onready var level_complete: Control     = $UILayer/LevelComplete
+
+# Stall root node names — must match the scene
+const STALL_NODE_NAMES: Array[String] = ["Stall0", "Stall1", "Stall2"]
+const STALL_NAMES: Array[String] = [
+	"STALL 1 — The Messy One",
+	"STALL 2 — The Clogged One",
+	"STALL 3 — The Vandalized One",
+]
 
 # -------------------------------------------------
 func _ready() -> void:
@@ -26,6 +34,11 @@ func _ready() -> void:
 	if level_manager and level_complete:
 		level_manager.level_complete_screen = level_complete
 
+	# Wire SprayTool ammo signal to HUD
+	var spray_tool := get_node_or_null("Player/Head/Camera3D/SprayTool") as SprayTool
+	if spray_tool and hud and hud.has_method("update_ammo"):
+		spray_tool.ammo_changed.connect(hud.update_ammo)
+
 # -------------------------------------------------
 func _on_level_complete(score_data: Dictionary) -> void:
 	if checklist:
@@ -36,8 +49,22 @@ func _on_level_complete(score_data: Dictionary) -> void:
 			level_complete.show_results(score_data)
 
 func _on_stall_activated(stall_index: int) -> void:
+	# Update checklist stall label
 	if checklist and checklist.has_method("set_active_stall"):
 		checklist.set_active_stall(stall_index)
+
+	# Update HUD stall name
+	if hud and hud.has_method("set_stall_name"):
+		if stall_index < STALL_NAMES.size():
+			hud.set_stall_name(STALL_NAMES[stall_index])
+
+	# Wire the active stall's TaskManager to the checklist
+	if stall_index < STALL_NODE_NAMES.size():
+		var stall := get_node_or_null(STALL_NODE_NAMES[stall_index])
+		if stall:
+			var tm := stall.find_child("TaskManager", true, false) as TaskManager
+			if tm and checklist and checklist.has_method("connect_task_manager"):
+				checklist.connect_task_manager(tm)
 
 func _on_timer_updated(seconds_remaining: float) -> void:
 	if hud and hud.has_method("update_timer"):
