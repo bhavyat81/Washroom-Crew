@@ -23,6 +23,11 @@ func _ready() -> void:
 	_base_position = _outer.size * 0.5
 
 # -------------------------------------------------
+## Returns true when a finger is actively touching the joystick.
+func is_active() -> bool:
+	return _touch_index != -1
+
+# -------------------------------------------------
 ## Returns a normalised (or proportional) Vector2 direction.
 ## x = strafe (right positive), y = forward/back (down positive = backward).
 func get_direction() -> Vector2:

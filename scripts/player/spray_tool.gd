@@ -56,6 +56,43 @@ func _ready() -> void:
 	_spray_ray.target_position = Vector3(0.0, 0.0, -spray_distance)
 	add_child(_spray_ray)
 
+	# Create water spray GPUParticles3D if not assigned in the editor
+	if spray_particles == null:
+		spray_particles = GPUParticles3D.new()
+		spray_particles.name = "SprayParticles"
+		spray_particles.amount = 32
+		spray_particles.lifetime = 0.3
+		spray_particles.emitting = false
+		spray_particles.one_shot = false
+		spray_particles.explosiveness = 0.0
+		spray_particles.local_coords = false
+
+		var mat := ParticleProcessMaterial.new()
+		mat.direction = Vector3(0.0, 0.0, -1.0)
+		mat.spread = 15.0
+		mat.initial_velocity_min = 4.0
+		mat.initial_velocity_max = 6.0
+		mat.gravity = Vector3(0.0, -2.0, 0.0)
+		mat.scale_min = 0.02
+		mat.scale_max = 0.04
+		mat.color = Color(0.3, 0.7, 1.0, 0.8)
+
+		# Fade out color over the particle lifetime
+		var gradient := Gradient.new()
+		gradient.set_point_color(0, Color(0.3, 0.7, 1.0, 0.8))
+		gradient.add_point(1.0, Color(0.3, 0.7, 1.0, 0.0))
+		var ramp := GradientTexture1D.new()
+		ramp.gradient = gradient
+		mat.color_ramp = ramp
+
+		spray_particles.process_material = mat
+
+		var mesh := QuadMesh.new()
+		mesh.size = Vector2(0.03, 0.03)
+		spray_particles.draw_pass_1 = mesh
+
+		add_child(spray_particles)
+
 # -------------------------------------------------
 func _process(delta: float) -> void:
 	# --- Spraying (hold to spray, drains ammo) ---

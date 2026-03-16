@@ -114,8 +114,8 @@ func _physics_process(delta: float) -> void:
 	# Start with keyboard WASD
 	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 
-	# Blend in virtual joystick if present
-	if _joystick != null:
+	# Blend in virtual joystick if present and actively being touched
+	if _joystick != null and _joystick.is_active():
 		var joy_dir: Vector2 = _joystick.get_direction()
 		# Joystick takes priority over keyboard when a finger is active
 		if joy_dir.length_squared() > JOYSTICK_DEADZONE:
