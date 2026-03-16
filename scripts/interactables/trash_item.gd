@@ -14,6 +14,11 @@ signal picked_up(item: TrashItem)
 @export var item_name: String = "trash"
 
 # -------------------------------------------------
+func _ready() -> void:
+	# Enable collision so InteractRay can detect this CSGBox3D
+	use_collision = true
+
+# -------------------------------------------------
 ## Returns the HUD prompt when the player aims at this node.
 func get_interact_prompt() -> String:
 	return "Press E to pick up %s" % item_name

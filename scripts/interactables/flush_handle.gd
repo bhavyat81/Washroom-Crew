@@ -16,6 +16,8 @@ var _mat: StandardMaterial3D
 
 # -------------------------------------------------
 func _ready() -> void:
+	# Enable collision so InteractRay can detect this CSGBox3D
+	use_collision = true
 	# Duplicate material so the colour animation doesn't affect other nodes
 	if material and material is StandardMaterial3D:
 		_mat = (material as StandardMaterial3D).duplicate() as StandardMaterial3D
