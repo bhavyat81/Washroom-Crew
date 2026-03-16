@@ -45,6 +45,10 @@ var special_task_label: String = ""
 var _scanned_soap: SoapDispenser = null
 var soap_task_done: bool = false
 
+# Drain / dirt-blob tracking
+var total_dirt_blobs: int = 0
+var dirt_blobs_drained: int = 0
+
 # Legacy task completion state
 var tasks: Dictionary = {
 	"clean_surface": false,
@@ -100,6 +104,10 @@ func _connect_stall_object(node: Node) -> void:
 		# Only auto-discover a soap dispenser when none is wired via the export property
 		_scanned_soap = node as SoapDispenser
 		_scanned_soap.task_completed.connect(_on_soap_task_scanned)
+	elif node is DirtBlob:
+		total_dirt_blobs += 1
+	elif node is FloorDrain:
+		(node as FloorDrain).dirt_drained.connect(_on_drain_dirt_drained)
 
 # -------------------------------------------------
 ## Returns true when every required task for this stall is complete.
@@ -118,6 +126,9 @@ func all_tasks_complete() -> bool:
 		return false
 	# Special task (e.g., plunging)
 	if special_task_required and not special_task_done:
+		return false
+	# Drain dirt task
+	if total_dirt_blobs > 0 and dirt_blobs_drained < total_dirt_blobs:
 		return false
 	# Legacy component tasks
 	if cleanable_surface and not tasks["clean_surface"]:
@@ -148,6 +159,8 @@ func get_task_summary() -> Dictionary:
 		"special_task_label":   special_task_label,
 		"has_soap":             (_scanned_soap != null or soap_dispenser != null),
 		"soap_done":            (soap_task_done or tasks.get("soap", false)),
+		"total_dirt_blobs":     total_dirt_blobs,
+		"dirt_blobs_drained":   dirt_blobs_drained,
 	}
 
 # -------------------------------------------------
@@ -162,6 +175,8 @@ func reset() -> void:
 	total_trash = 0
 	_has_flush_handle = false
 	_scanned_soap = null
+	total_dirt_blobs = 0
+	dirt_blobs_drained = 0
 
 	for key in tasks:
 		tasks[key] = false
@@ -191,6 +206,8 @@ func get_pending_tasks() -> Array[String]:
 		pending.append("soap")
 	if special_task_required and not special_task_done:
 		pending.append("special_task")
+	if total_dirt_blobs > 0 and dirt_blobs_drained < total_dirt_blobs:
+		pending.append("drain_dirt_%d_%d" % [dirt_blobs_drained, total_dirt_blobs])
 	for key in tasks:
 		if not tasks[key]:
 			pending.append(key)
@@ -219,6 +236,15 @@ func _on_toilet_flushed(_handle: FlushHandle) -> void:
 func _on_soap_task_scanned(_dispenser: SoapDispenser) -> void:
 	soap_task_done = true
 	emit_signal("task_updated", "soap", true)
+	_check_complete()
+
+# -------------------------------------------------
+# Drain / blob signal handlers
+
+func _on_drain_dirt_drained(_blob: DirtBlob) -> void:
+	dirt_blobs_drained = min(dirt_blobs_drained + 1, total_dirt_blobs)
+	var all_done := dirt_blobs_drained >= total_dirt_blobs
+	emit_signal("task_updated", "drain_dirt", all_done)
 	_check_complete()
 
 # -------------------------------------------------

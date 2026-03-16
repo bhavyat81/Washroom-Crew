@@ -128,6 +128,18 @@ func _do_spray(delta: float) -> void:
 	var stain: Stain = _find_stain(hit)
 	if stain:
 		stain.apply_spray(spray_power * delta)
+		return
+
+	# Check for DirtBlob — push it horizontally toward the drain
+	var blob: DirtBlob = _find_dirt_blob(hit)
+	if blob:
+		# Project camera forward onto XZ plane for horizontal-only push
+		var spray_dir := Vector3.ZERO
+		if _camera:
+			spray_dir = -_camera.global_transform.basis.z
+		else:
+			spray_dir = -global_transform.basis.z
+		blob.apply_spray(spray_dir, spray_power * delta)
 
 # -------------------------------------------------
 func _do_foam(delta: float) -> void:
@@ -161,6 +173,16 @@ func _find_stain(node: Node) -> Stain:
 	while check != null:
 		if check is Stain:
 			return check as Stain
+		check = check.get_parent()
+	return null
+
+# -------------------------------------------------
+## Searches the hit node and its ancestors for a DirtBlob.
+func _find_dirt_blob(node: Node) -> DirtBlob:
+	var check := node
+	while check != null:
+		if check is DirtBlob:
+			return check as DirtBlob
 		check = check.get_parent()
 	return null
 

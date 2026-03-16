@@ -20,16 +20,19 @@ const STALL_TASK_CONFIGS: Array = [
 		"stains":       "🧹 Clean floor stains (0/5)",
 		"trash_items":  "🗑️ Pick up trash (0/3)",
 		"toilet_flush": "🚽 Flush toilet",
+		"drain_dirt":   "🚿 Push dirt to drain (0/4)",
 	},
 	# Stall 1 — The Clogged One
 	{
 		"stains": "🧹 Clean water puddle",
 		"soap":   "🧴 Refill soap dispenser",
+		"drain_dirt": "🚿 Push dirt to drain (0/4)",
 	},
 	# Stall 2 — The Vandalized One
 	{
 		"stains":      "🎨 Clean graffiti (0/3)",
 		"trash_items": "🗑️ Pick up trash (0/6)",
+		"drain_dirt":  "🚿 Push dirt to drain (0/4)",
 	},
 ]
 
@@ -136,6 +139,14 @@ func _refresh_task_display() -> void:
 		if soap_done:
 			_task_rows["soap"].text = "🧴 Refill soap dispenser ✓"
 		_set_row_done("soap", soap_done)
+
+	# Drain dirt row
+	if _task_rows.has("drain_dirt"):
+		var drained: int = s.get("dirt_blobs_drained", 0)
+		var total_blobs: int = s.get("total_dirt_blobs", 0)
+		if total_blobs > 0:
+			_task_rows["drain_dirt"].text = "🚿 Push dirt to drain (%d/%d)" % [drained, total_blobs]
+		_set_row_done("drain_dirt", total_blobs > 0 and drained >= total_blobs)
 
 # -------------------------------------------------
 func _set_row_done(task_id: String, done: bool) -> void:

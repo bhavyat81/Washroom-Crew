@@ -21,6 +21,8 @@ var _mat: StandardMaterial3D
 
 # -------------------------------------------------
 func _ready() -> void:
+	# Enable collision so the spray ray and interact ray can detect this CSGBox3D
+	use_collision = true
 	# Duplicate the shared material so each stain instance can fade independently
 	if material and material is StandardMaterial3D:
 		_mat = (material as StandardMaterial3D).duplicate() as StandardMaterial3D
