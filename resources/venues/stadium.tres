@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="VenueData" format=3 uid="uid://wrcvenue002"]
+
+[ext_resource type="Script" path="res://scripts/progression/venue_data.gd" id="1_venuedata"]
+
+[resource]
+script = ExtResource("1_venuedata")
+venue_name = "Stadium Event Cleanup"
+venue_id = "stadium"
+description = "Half-time: 15 minutes to clean the entire stadium restroom block before 80,000 fans return. No pressure."
+venue_type = 1
+level_count = 10
+is_unlocked = false
+unlock_cost = 0
+is_iap = false
+iap_product_id = ""
+rewarded_ad_available = true
+required_stars_to_unlock = 9

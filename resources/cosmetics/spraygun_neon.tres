@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CosmeticsData" format=3 uid="uid://wrccos002"]
+
+[ext_resource type="Script" path="res://scripts/progression/cosmetics_data.gd" id="1_cosdata"]
+
+[resource]
+script = ExtResource("1_cosdata")
+cosmetic_type = 2
+cosmetic_name = "Neon Spray Gun"
+cosmetic_id = "spraygun_neon"
+description = "A vivid neon-green spray gun skin. Makes cleaning look cool."
+is_unlocked = false
+unlock_cost = 200
+is_premium = false
+trial_via_rewarded_ad = true
+rarity = 1

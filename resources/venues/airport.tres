@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="VenueData" format=3 uid="uid://wrcvenue001"]
+
+[ext_resource type="Script" path="res://scripts/progression/venue_data.gd" id="1_venuedata"]
+
+[resource]
+script = ExtResource("1_venuedata")
+venue_name = "Airport Terminal"
+venue_id = "airport"
+description = "Keep the gate restrooms spotless for thousands of daily travellers. Fast turnaround required — gates open in 3 minutes!"
+venue_type = 0
+level_count = 10
+is_unlocked = true
+unlock_cost = 0
+is_iap = false
+iap_product_id = ""
+rewarded_ad_available = true
+required_stars_to_unlock = 0

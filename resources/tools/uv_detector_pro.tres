@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ToolData" format=3 uid="uid://wrctool004"]
+
+[ext_resource type="Script" path="res://scripts/progression/tool_data.gd" id="1_tooldata"]
+
+[resource]
+script = ExtResource("1_tooldata")
+tool_name = "UV Stain Detector Pro"
+tool_id = "uv_detector_pro"
+description = "Reveals hidden stains with UV mode. Top-tier professional kit."
+spray_power = 0.9
+spray_range = 5.0
+foam_speed_multiplier = 2.5
+has_foam = true
+has_uv_mode = true
+unlock_cost = 1000
+is_unlocked = false
+skin_id = "default"
+tier = 3

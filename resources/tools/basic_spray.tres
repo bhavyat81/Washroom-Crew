@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ToolData" format=3 uid="uid://wrctool001"]
+
+[ext_resource type="Script" path="res://scripts/progression/tool_data.gd" id="1_tooldata"]
+
+[resource]
+script = ExtResource("1_tooldata")
+tool_name = "Basic Spray Nozzle"
+tool_id = "basic_spray"
+description = "Standard-issue spray nozzle. Gets the job done — slowly."
+spray_power = 0.4
+spray_range = 3.0
+foam_speed_multiplier = 1.0
+has_foam = true
+has_uv_mode = false
+unlock_cost = 0
+is_unlocked = true
+skin_id = "default"
+tier = 0

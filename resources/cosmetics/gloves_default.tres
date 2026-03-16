@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CosmeticsData" format=3 uid="uid://wrccos001"]
+
+[ext_resource type="Script" path="res://scripts/progression/cosmetics_data.gd" id="1_cosdata"]
+
+[resource]
+script = ExtResource("1_cosdata")
+cosmetic_type = 0
+cosmetic_name = "Default Gloves"
+cosmetic_id = "gloves_default"
+description = "Standard-issue yellow rubber gloves. Classic."
+is_unlocked = true
+unlock_cost = 0
+is_premium = false
+trial_via_rewarded_ad = false
+rarity = 0

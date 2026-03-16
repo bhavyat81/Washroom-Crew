@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ToolData" format=3 uid="uid://wrctool002"]
+
+[ext_resource type="Script" path="res://scripts/progression/tool_data.gd" id="1_tooldata"]
+
+[resource]
+script = ExtResource("1_tooldata")
+tool_name = "Improved Nozzle"
+tool_id = "improved_nozzle"
+description = "Better flow control. Cleans 40% faster than the basic spray."
+spray_power = 0.56
+spray_range = 3.5
+foam_speed_multiplier = 1.2
+has_foam = true
+has_uv_mode = false
+unlock_cost = 150
+is_unlocked = false
+skin_id = "default"
+tier = 1
