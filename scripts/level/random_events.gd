@@ -11,8 +11,8 @@ extends Node
 
 # -------------------------------------------------
 # Signals — connect these to the rest of the gameplay systems
-signal event_triggered(event_type: String, stall_index: int)
-signal event_resolved(event_type: String, stall_index: int)
+signal event_triggered(event_type, stall_index)
+signal event_resolved(event_type, stall_index)
 
 # -------------------------------------------------
 @export var auto_trigger: bool = false          # Enable for automatic random events

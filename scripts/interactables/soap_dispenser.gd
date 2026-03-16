@@ -6,7 +6,7 @@ class_name SoapDispenser
 extends "res://scripts/interactables/interactable_base.gd"
 
 # -------------------------------------------------
-signal task_completed(dispenser: SoapDispenser)
+signal task_completed(dispenser)
 
 # -------------------------------------------------
 @export var refilled: bool = false

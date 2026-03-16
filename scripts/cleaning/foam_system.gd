@@ -14,7 +14,7 @@ extends Node
 # -------------------------------------------------
 # Signals
 signal foam_complete            # Foam application finished
-signal foam_progress_changed(progress: float)   # 0.0 .. 1.0
+signal foam_progress_changed(progress)   # 0.0 .. 1.0
 
 # -------------------------------------------------
 @export var foam_duration: float = 3.0          # Seconds to hold for full disinfection

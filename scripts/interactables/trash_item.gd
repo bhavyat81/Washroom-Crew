@@ -8,7 +8,7 @@ extends CSGBox3D
 
 # -------------------------------------------------
 # Signals
-signal picked_up(item: TrashItem)
+signal picked_up(item)
 
 # -------------------------------------------------
 @export var item_name: String = "trash"

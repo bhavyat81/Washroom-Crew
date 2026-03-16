@@ -9,7 +9,7 @@ extends StaticBody3D
 
 # -------------------------------------------------
 # Signals
-signal dirt_drained(blob: DirtBlob)
+signal dirt_drained(blob)
 
 # -------------------------------------------------
 ## Radius of the drain Area3D trigger (slightly larger than the visual grate)
