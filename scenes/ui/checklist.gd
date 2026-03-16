@@ -30,9 +30,10 @@ const STALL_TASK_CONFIGS: Array = [
 	},
 	# Stall 2 — The Vandalized One
 	{
-		"stains":      "🎨 Clean graffiti (0/3)",
-		"trash_items": "🗑️ Pick up trash (0/6)",
-		"drain_dirt":  "🚿 Push dirt to drain (0/4)",
+		"stains":        "🎨 Clean graffiti (0/3)",
+		"trash_items":   "🗑️ Pick up trash (0/6)",
+		"toilet_flush":  "🚽 Flush toilet",
+		"drain_dirt":    "🚿 Push dirt to drain (0/4)",
 	},
 ]
 

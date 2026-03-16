@@ -33,11 +33,21 @@ func _process(_delta: float) -> void:
 
 	var hit := get_collider()
 
-	# Check if we hit something that is interactable
-	if hit and hit.has_method("get_interact_prompt"):
-		if hit != _current_target:
-			_current_target = hit
-			_show_prompt(hit.get_interact_prompt())
+	# Walk up the parent chain from the raw collider to find a node that
+	# implements the interact interface (e.g. CSGBox3D generates a child
+	# StaticBody3D as its physics collider — we need to reach the CSGBox3D).
+	var interactable = _find_interactable(hit)
+
+	if interactable:
+		var prompt := interactable.get_interact_prompt()
+		if prompt != "":
+			if interactable != _current_target:
+				_current_target = interactable
+			_show_prompt(prompt)
+		else:
+			# Interactable exists but prompt is empty (e.g. already used)
+			_current_target = null
+			_hide_prompt()
 	else:
 		if _current_target != null:
 			_current_target = null
@@ -50,6 +60,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _current_target.has_method("interact"):
 			_current_target.interact()
 		get_viewport().set_input_as_handled()
+
+# -------------------------------------------------
+## Walks up the scene tree from node to find the nearest ancestor (or self)
+## that implements get_interact_prompt.  This is necessary because CSGBox3D
+## nodes with use_collision=true create an auto-generated StaticBody3D child
+## as the actual physics collider; the script lives on the parent CSGBox3D.
+func _find_interactable(node: Node) -> Node:
+	var check = node
+	while check != null:
+		if check.has_method("get_interact_prompt"):
+			return check
+		check = check.get_parent()
+	return null
 
 # -------------------------------------------------
 func _show_prompt(text: String) -> void:
