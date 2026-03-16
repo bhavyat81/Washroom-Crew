@@ -3,7 +3,7 @@
 ## Player presses E to refill.  Emits "task_completed" when refilled.
 
 class_name SoapDispenser
-extends InteractableBase
+extends "res://scripts/interactables/interactable_base.gd"
 
 # -------------------------------------------------
 signal task_completed(dispenser: SoapDispenser)

@@ -98,7 +98,6 @@ func _build_trigger() -> void:
 
 # -------------------------------------------------
 func _on_body_entered(body: Node3D) -> void:
-	if body is DirtBlob:
-		var blob := body as DirtBlob
-		blob.drain()
-		emit_signal("dirt_drained", blob)
+	if body.has_method("drain") and body.has_signal("blob_drained"):
+		body.drain()
+		emit_signal("dirt_drained", body)

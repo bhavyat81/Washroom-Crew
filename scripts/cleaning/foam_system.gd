@@ -24,15 +24,15 @@ signal foam_progress_changed(progress: float)   # 0.0 .. 1.0
 # -------------------------------------------------
 var foam_progress: float = 0.0     # 0.0 .. 1.0
 var is_complete: bool = false
-var _cleanable: CleanableSurface   # Sibling CleanableSurface (resolved in _ready)
+var _cleanable = null   # Sibling CleanableSurface (resolved in _ready)
 
 # -------------------------------------------------
 func _ready() -> void:
 	# Try to find a sibling CleanableSurface
 	if get_parent():
 		for child in get_parent().get_children():
-			if child is CleanableSurface:
-				_cleanable = child as CleanableSurface
+			if child.has_method("get_cleanliness_percent"):
+				_cleanable = child
 				break
 
 	if progress_bar:

@@ -6,7 +6,7 @@
 extends Node3D
 
 # -------------------------------------------------
-@onready var level_manager: LevelManager = $LevelManager
+@onready var level_manager: Node = $LevelManager
 @onready var hud: Control                = $UILayer/HUD
 @onready var checklist: Control          = $UILayer/Checklist
 @onready var level_complete: Control     = $UILayer/LevelComplete
@@ -36,7 +36,7 @@ func _ready() -> void:
 		level_manager.level_complete_screen = level_complete
 
 	# Wire SprayTool ammo signal to HUD
-	var spray_tool := get_node_or_null("Player/Head/Camera3D/SprayTool") as SprayTool
+	var spray_tool = get_node_or_null("Player/Head/Camera3D/SprayTool")
 	if spray_tool and hud and hud.has_method("update_ammo"):
 		spray_tool.ammo_changed.connect(hud.update_ammo)
 
@@ -69,7 +69,7 @@ func _on_stall_activated(stall_index: int) -> void:
 	if stall_index < STALL_NODE_NAMES.size():
 		var stall := get_node_or_null(STALL_NODE_NAMES[stall_index])
 		if stall:
-			var tm := stall.find_child("TaskManager", true, false) as TaskManager
+			var tm = stall.find_child("TaskManager", true, false)
 			if tm and checklist and checklist.has_method("connect_task_manager"):
 				checklist.connect_task_manager(tm)
 

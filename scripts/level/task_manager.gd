@@ -20,11 +20,11 @@ signal task_updated(task_id: String, completed: bool)
 @export var stall_index: int = 0
 
 # Legacy component references (optional — connect via exports in editor)
-@export var cleanable_surface: CleanableSurface
-@export var foam_system: FoamSystem
-@export var tissue_holder: TissueHolder
-@export var soap_dispenser: SoapDispenser
-@export var trash_bin: TrashBin
+@export var cleanable_surface: Node
+@export var foam_system: Node
+@export var tissue_holder: Node
+@export var soap_dispenser: Node
+@export var trash_bin: Node
 
 # -------------------------------------------------
 # Per-stall dynamic task tracking
@@ -42,7 +42,7 @@ var special_task_required: bool = false
 var special_task_label: String = ""
 
 # Discovered soap dispenser (scanned from stall children)
-var _scanned_soap: SoapDispenser = null
+var _scanned_soap = null
 var soap_task_done: bool = false
 
 # Drain / dirt-blob tracking
@@ -87,27 +87,27 @@ func _scan_node(node: Node) -> void:
 	for child in node.get_children():
 		_connect_stall_object(child)
 		# Recurse, but skip other TaskManagers to avoid crossing stall boundaries
-		if not child is TaskManager:
+		if not child.has_signal("stall_complete"):
 			_scan_node(child)
 
 func _connect_stall_object(node: Node) -> void:
-	if node is Stain:
+	if node.has_signal("stain_cleaned"):
 		total_stains += 1
-		(node as Stain).stain_cleaned.connect(_on_stain_cleaned)
-	elif node is TrashItem:
+		node.stain_cleaned.connect(_on_stain_cleaned)
+	elif node.has_signal("picked_up"):
 		total_trash += 1
-		(node as TrashItem).picked_up.connect(_on_trash_picked)
-	elif node is FlushHandle:
+		node.picked_up.connect(_on_trash_picked)
+	elif node.has_signal("flushed"):
 		_has_flush_handle = true
-		(node as FlushHandle).flushed.connect(_on_toilet_flushed)
-	elif node is SoapDispenser and _scanned_soap == null and soap_dispenser == null:
+		node.flushed.connect(_on_toilet_flushed)
+	elif node.has_signal("task_completed") and "refilled" in node and _scanned_soap == null and soap_dispenser == null:
 		# Only auto-discover a soap dispenser when none is wired via the export property
-		_scanned_soap = node as SoapDispenser
-		_scanned_soap.task_completed.connect(_on_soap_task_scanned)
-	elif node is DirtBlob:
+		_scanned_soap = node
+		node.task_completed.connect(_on_soap_task_scanned)
+	elif node.has_signal("blob_drained"):
 		total_dirt_blobs += 1
-	elif node is FloorDrain:
-		(node as FloorDrain).dirt_drained.connect(_on_drain_dirt_drained)
+	elif node.has_signal("dirt_drained"):
+		node.dirt_drained.connect(_on_drain_dirt_drained)
 
 # -------------------------------------------------
 ## Returns true when every required task for this stall is complete.
@@ -216,24 +216,24 @@ func get_pending_tasks() -> Array[String]:
 # -------------------------------------------------
 # Signal handlers — new dynamic task types
 
-func _on_stain_cleaned(_stain: Stain) -> void:
+func _on_stain_cleaned(_stain) -> void:
 	stains_cleaned += 1
 	var all_done := stains_cleaned >= total_stains
 	emit_signal("task_updated", "stains", all_done)
 	_check_complete()
 
-func _on_trash_picked(_item: TrashItem) -> void:
+func _on_trash_picked(_item) -> void:
 	trash_picked += 1
 	var all_done := trash_picked >= total_trash
 	emit_signal("task_updated", "trash_items", all_done)
 	_check_complete()
 
-func _on_toilet_flushed(_handle: FlushHandle) -> void:
+func _on_toilet_flushed(_handle) -> void:
 	toilet_flushed = true
 	emit_signal("task_updated", "toilet_flush", true)
 	_check_complete()
 
-func _on_soap_task_scanned(_dispenser: SoapDispenser) -> void:
+func _on_soap_task_scanned(_dispenser) -> void:
 	soap_task_done = true
 	emit_signal("task_updated", "soap", true)
 	_check_complete()
@@ -241,7 +241,7 @@ func _on_soap_task_scanned(_dispenser: SoapDispenser) -> void:
 # -------------------------------------------------
 # Drain / blob signal handlers
 
-func _on_drain_dirt_drained(_blob: DirtBlob) -> void:
+func _on_drain_dirt_drained(_blob) -> void:
 	dirt_blobs_drained = min(dirt_blobs_drained + 1, total_dirt_blobs)
 	var all_done := dirt_blobs_drained >= total_dirt_blobs
 	emit_signal("task_updated", "drain_dirt", all_done)
@@ -250,19 +250,19 @@ func _on_drain_dirt_drained(_blob: DirtBlob) -> void:
 # -------------------------------------------------
 # Signal handlers — legacy component types
 
-func _on_surface_clean(_surface: CleanableSurface) -> void:
+func _on_surface_clean(_surface) -> void:
 	_complete_task("clean_surface")
 
 func _on_foam_complete() -> void:
 	_complete_task("foam_applied")
 
-func _on_tissue_replaced(_holder: TissueHolder) -> void:
+func _on_tissue_replaced(_holder) -> void:
 	_complete_task("tissue")
 
-func _on_soap_refilled(_dispenser: SoapDispenser) -> void:
+func _on_soap_refilled(_dispenser) -> void:
 	_complete_task("soap")
 
-func _on_trash_changed(_bin: TrashBin) -> void:
+func _on_trash_changed(_bin) -> void:
 	_complete_task("trash")
 
 # -------------------------------------------------

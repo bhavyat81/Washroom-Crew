@@ -4,7 +4,7 @@
 ## Emits "task_completed" when replaced (TaskManager listens).
 
 class_name TissueHolder
-extends InteractableBase
+extends "res://scripts/interactables/interactable_base.gd"
 
 # -------------------------------------------------
 signal task_completed(holder: TissueHolder)
