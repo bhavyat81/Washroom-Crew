@@ -43,10 +43,13 @@ func _process(_delta: float) -> void:
 			_current_target = null
 			_hide_prompt()
 
+# -------------------------------------------------
+func _unhandled_input(event: InputEvent) -> void:
 	# Fire interaction when player presses interact key
-	if Input.is_action_just_pressed("interact") and _current_target != null:
+	if event.is_action_pressed("interact") and _current_target != null:
 		if _current_target.has_method("interact"):
 			_current_target.interact()
+		get_viewport().set_input_as_handled()
 
 # -------------------------------------------------
 func _show_prompt(text: String) -> void:

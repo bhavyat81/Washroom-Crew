@@ -32,6 +32,8 @@ signal ammo_changed(current: float, maximum: float)
 var _camera: Camera3D
 var _spray_ray: RayCast3D
 var current_ammo: float
+var _spraying: bool = false
+var _foaming: bool = false
 
 # -------------------------------------------------
 func _ready() -> void:
@@ -94,9 +96,34 @@ func _ready() -> void:
 		add_child(spray_particles)
 
 # -------------------------------------------------
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("spray"):
+		_spraying = true
+		get_viewport().set_input_as_handled()
+	elif event.is_action_released("spray"):
+		_spraying = false
+		get_viewport().set_input_as_handled()
+
+	if event.is_action_pressed("foam"):
+		_foaming = true
+		get_viewport().set_input_as_handled()
+	elif event.is_action_released("foam"):
+		_foaming = false
+		get_viewport().set_input_as_handled()
+
+# -------------------------------------------------
+func _physics_process(_delta: float) -> void:
+	_spray_ray.force_raycast_update()
+
+# -------------------------------------------------
 func _process(delta: float) -> void:
+	# Combine event-driven flags (desktop) with Input polling (mobile touch buttons
+	# use Input.action_press() which does not dispatch input events).
+	var is_spraying: bool = _spraying or Input.is_action_pressed("spray")
+	var is_foaming: bool = _foaming or Input.is_action_pressed("foam")
+
 	# --- Spraying (hold to spray, drains ammo) ---
-	if Input.is_action_pressed("spray") and current_ammo > 0.0:
+	if is_spraying and current_ammo > 0.0:
 		current_ammo = max(0.0, current_ammo - ammo_drain_rate * delta)
 		_do_spray(delta)
 		_set_particles_active(true)
@@ -108,7 +135,7 @@ func _process(delta: float) -> void:
 	emit_signal("ammo_changed", current_ammo, max_ammo)
 
 	# --- Foam (delegated to FoamSystem on the surface) ---
-	if Input.is_action_pressed("foam"):
+	if is_foaming:
 		_do_foam(delta)
 
 # -------------------------------------------------

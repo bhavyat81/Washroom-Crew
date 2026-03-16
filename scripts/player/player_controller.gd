@@ -56,6 +56,15 @@ func set_joystick(joystick_node) -> void:
 
 # -------------------------------------------------
 func _input(event: InputEvent) -> void:
+	# Release / recapture mouse on desktop with Escape
+	if event.is_action_pressed("ui_cancel") and not OS.has_feature("mobile"):
+		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+# -------------------------------------------------
+func _unhandled_input(event: InputEvent) -> void:
 	# ---- Desktop mouse-look ----
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(-event.relative.x * mouse_sensitivity)
@@ -65,13 +74,7 @@ func _input(event: InputEvent) -> void:
 			deg_to_rad(-max_look_angle_deg),
 			deg_to_rad(max_look_angle_deg)
 		)
-
-	# Release / recapture mouse on desktop with Escape
-	if event.is_action_pressed("ui_cancel") and not OS.has_feature("mobile"):
-		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		get_viewport().set_input_as_handled()
 
 	# ---- Touch camera (mobile only) ----
 	# On desktop: InputEventMouseMotion handles the camera.
